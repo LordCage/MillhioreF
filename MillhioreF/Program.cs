@@ -11,6 +11,7 @@ namespace MillhioreF
         static void Main(string[] args)
         {
             Broadcast bot = new Broadcast();
+            OniChan broadcaster = new OniChan();
         }
     }
 }
