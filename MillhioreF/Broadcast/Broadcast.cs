@@ -57,7 +57,7 @@ namespace MillhioreF
                     var logChannel = e.Server.FindChannels("announcements").FirstOrDefault();
 
                     await e.Channel.SendMessage(text);
-                    
+
                 });
         }
         public void RegisterShutoffCommand()
@@ -68,18 +68,77 @@ namespace MillhioreF
                     await e.Channel.Client.Disconnect();
                 });
         }
-
-           class Support
-        {
-            DiscordClient supporter;
-        }
-
-
-        
-        private void Log(object sender, LogMessageEventArgs e)
+            private void Log(object sender, LogMessageEventArgs e)
         {
             Console.WriteLine(e.Message);
         }
     }
-}
+
+        class Support
+        {
+            DiscordClient supporter;
+            CommandService service;
+
+            public Support()
+            {
+                supporter = new DiscordClient(x =>
+                {
+                    x.AppName = "Supporting";
+                    x.LogLevel = LogSeverity.Info;
+                    x.LogHandler = lllya;
+                });
+                supporter.UsingCommands(x =>
+                {
+                    x.PrefixChar = '@';
+                    x.AllowMentionPrefix = true;
+                    x.HelpMode = HelpMode.Private;
+                });
+
+                service = supporter.GetService<CommandService>();
+
+                //
+
+                //
+                supporter.ExecuteAndWait(async () =>
+                {
+                    await supporter.Connect("", TokenType.Bot);
+                });
+            }
+
+            private void RegisterModeratorCommand()
+            {
+                service.CreateCommand("kick")
+                .Description("")
+                .Parameter("user", ParameterType.Unparsed)
+                    .Do(async (e) =>
+                  {
+                      ulong id;
+                      User u = null;
+                      string FindingTheUser = e.Args[0];
+                      if (!string.IsNullOrWhiteSpace(FindingTheUser))
+                      {
+                          if (e.Message.MentionedUsers.Count() == 1)
+                              u = e.Message.MentionedUsers.FirstOrDefault();
+                          else if (e.Server.FindUsers(FindingTheUser).Any())
+                              u = e.Server.FindUsers(FindingTheUser).FirstOrDefault();
+                          else if (ulong.TryParse(FindingTheUser, out id))
+                              u = e.Server.GetUser(id);
+                      }
+                      if (u == null)
+                      {
+                          await e.Channel.SendMessage($"**appears out of bush** *Sorry Master, i was unable to find `{FindingTheUser}`");
+                          return;
+                      }
+                      await e.Channel.SendMessage($"*cya {u.Mention} :lllyastare:");
+                      await u.Kick();
+                  });
+            }
+
+            private void lllya(object sender, LogMessageEventArgs e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+        }
+    }
 
