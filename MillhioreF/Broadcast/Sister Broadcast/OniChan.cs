@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.Modules;
-//
-//
-//
+//-
+//=
+//-
 using System;
 using System.Collections.Generic;
 using System.Linq;
