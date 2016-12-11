@@ -35,6 +35,7 @@ namespace MillhioreF
             service = supporter.GetService<CommandService>();
             RegisterModeratorCommand();
             RegisterShutdownCommand();
+            RegisterSeperatorCommand();
 
             //
 
@@ -48,7 +49,7 @@ namespace MillhioreF
         private void RegisterModeratorCommand()
         {
             service.CreateCommand("kick")
-            .Description("")
+            .Description("`Kicks member from server.` ```EX : @kick <@someone>```")
             .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
@@ -66,18 +67,40 @@ namespace MillhioreF
                     }
                     if (u == null)
                     {
-                        await e.Channel.SendMessage($"**appears out of bush** *Sorry Master, i was unable to find `{FindingTheUser}`");
+
+                        await e.Channel.SendMessage($"**appears out of bush** *Sorry Master, i was unable to find* `{FindingTheUser}`");
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("MillhioreF : Kick Command Usage Stats"); // 3 spaces.
+                        Console.WriteLine("---");
+                        Console.WriteLine("ID" + " " + e.Channel.Id);
+                        Console.WriteLine("CHANNEL NAME" + " " + e.Channel.Name);
+                        Console.WriteLine("NAME" + " " + e.User.Name);
+                        Console.WriteLine("ACTIVITY" + " " + e.User.LastOnlineAt);
+                        Console.WriteLine("NICK" + " " + e.User.NicknameMention);
+                        Console.WriteLine("---");
                         return;
+
                     }
                     await e.Channel.SendMessage($"*cya* {u.Mention} :dango:");
                     await u.Kick();
                 });
         }
+        private void RegisterSeperatorCommand()
+        {
+            service.CreateCommand("Seperator")
+            .Description("`Seperator Line. Do i say more?..` ```EX : @Seperator```")
+            .Do(async (e) =>
+            {
+                await e.Channel.SendFile("Seperator/seperator.png");
+            });
+        } 
         private void RegisterShutdownCommand()
         {
             service.CreateCommand("eury")
+               .Description("`Shuts down MillhioreF bot` ```EX : Currently no documentation for this command.```")
               .Do(async (e) =>
               {
+                  Console.ForegroundColor = ConsoleColor.Yellow;
                   await e.Channel.Client.Disconnect();
               });
                 
