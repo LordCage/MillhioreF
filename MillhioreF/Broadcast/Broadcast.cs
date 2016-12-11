@@ -95,6 +95,7 @@ namespace MillhioreF
                 });
 
                 service = supporter.GetService<CommandService>();
+                RegisterModeratorCommand();
 
                 //
 
